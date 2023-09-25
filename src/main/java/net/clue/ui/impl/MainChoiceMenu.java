@@ -19,14 +19,26 @@ public class MainChoiceMenu {
 
         JLabel label = WeComponents.WeLabel(ColorUtil.text("§1Please select a util"), "big");
         JButton stats = WeComponents.WeButton(ColorUtil.text("§rStats changer"), "medium");
+        JButton iconChanger = WeComponents.WeButton(ColorUtil.text("§gIcon changer"), "medium");
+        JButton advUnlock = WeComponents.WeButton(ColorUtil.text("§yUnlock Achievements"), "medium");
 
         stats.addActionListener(e -> {
             new StatsMenu();
             frame.setVisible(false);
         });
+        iconChanger.addActionListener(e -> {
+            new IconChangerMenu();
+            frame.setVisible(false);
+        });
+        advUnlock.addActionListener(e -> {
+            new AdvancementMenu();
+            frame.setVisible(false);
+        });
 
         frame.add(label);
         frame.add(stats);
+        frame.add(iconChanger);
+        frame.add(advUnlock);
 
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

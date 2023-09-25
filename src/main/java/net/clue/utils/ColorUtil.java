@@ -16,8 +16,10 @@ public class ColorUtil {
         colors.put("§d", "<font color='magenta'>");
         colors.put("§f", "<font color='white'>");
         colors.put("§n", "<br/>");
-        for(Map.Entry<String, String> entry : colors.entrySet()){
-            text = text.replace(entry.getKey(), entry.getValue());
+        if(text.contains("§")){
+            for(Map.Entry<String, String> entry : colors.entrySet()){
+                text = text.replace(entry.getKey(), entry.getValue());
+            }
         }
 
         return "<html>"+text+"</font></html>";

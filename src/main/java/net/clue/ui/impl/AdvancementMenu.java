@@ -1,6 +1,5 @@
 package net.clue.ui.impl;
 
-import net.clue.Main;
 import net.clue.ui.WEFrame;
 import net.clue.ui.WeComponents;
 import net.clue.utils.ColorUtil;
@@ -11,18 +10,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class StatsMenu {
+public class AdvancementMenu {
 
-    public StatsMenu(){
-        JFrame frame = WEFrame.WorldFrame(300, 400, "Stats Changer");
+    public AdvancementMenu(){
+        JFrame frame = WEFrame.WorldFrame(300, 400, "Advancement Unlocker");
         FlowLayout l = new FlowLayout();
         l.setHgap(40);
         frame.setLayout(l);
 
-        JLabel label = WeComponents.WeLabel(ColorUtil.text("§1Statistics Changer"), "medium");
+        JLabel label = WeComponents.WeLabel(ColorUtil.text("§1Advancement Unlocker"), "medium");
         JLabel success = WeComponents.WeLabel(ColorUtil.text("§rUnchanged for now"), "small");
 
         JButton backToMenu = WeComponents.WeButton(ColorUtil.text("§1Go back to menu"), "small");
@@ -31,22 +31,24 @@ public class StatsMenu {
             frame.setVisible(false);
         });
 
-        String[] keys = {"jump", "play_time", "sprint_one_cm", "walk_one_cm", "total_world_time", "leave_game", "sneak_time", "damage_taken"};
-        JComboBox<String> comboBox = WeComponents.WeComboBox(keys, "small");
-
-        JSpinner value = WeComponents.WeSpinner(0, 0, Integer.MAX_VALUE, 1000, "medium");
-
-        JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and inject"), "medium");
+        JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and unlock"), "medium");
         inject.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String valuee = String.valueOf(value.getValue());
                 WorldSelector s = new WorldSelector(frame, "Choose a World Folder");
-                System.out.println(valuee + " ");
                 FileUtil f = new FileUtil();
 
                 try {
-                    f.maxStats(s.worldFolder, Objects.requireNonNull(comboBox.getSelectedItem()).toString(), valuee);
+                    File file;
+                    String dl = "https://download1507.mediafire.com/dn0uzl84hbggD7wkJT5ak8dcKKIHH3xUYkAzBpchgTtYbv1Jve2fcCHRjftACZ62HOK9pT1bkg0F-MGXrJXMyS_XfUEfI5cRfea-ij915tV_7GPwObO0g6fSvT8BB2S5bLmiqCSYg3wF_RAX_w7lYs883fnMCkZvM70oPRS9Yil-/396r3d1ubkqy3pq/stats.json";
+                    for(File fileData : Objects.requireNonNull(new File(s.worldFolder + "\\advancements\\").listFiles())){
+                        file = fileData;
+                        System.out.println("Deleting old file");
+                        fileData.delete();
+                        System.out.println("Replaced new file with name " + file.getName() + " (" + file.getAbsolutePath() + ")");
+                        f.downloadFromURL(dl, file);
+                    }
+
                     success.setText(ColorUtil.text("§gChanged data!"));
                 } catch (IOException ex) {
                     success.setText("§rFailed to change data");
@@ -57,8 +59,6 @@ public class StatsMenu {
 
         frame.add(label);
         frame.add(success);
-        frame.add(comboBox);
-        frame.add(value);
         frame.add(inject);
         frame.add(backToMenu);
 
