@@ -33,8 +33,8 @@ public class NBTMenu {
         JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and inject"), "medium");
         inject.addActionListener(e -> {
             WorldSelector s = new WorldSelector(frame, "Choose a dat File");
-            NbtEditor nbt = new NbtEditor(new File(s.worldFolder.getAbsolutePath() + "\\level.dat"));
-            nbt.dothing();
+            NbtEditor world = new NbtEditor(new File(s.worldFolder.getAbsolutePath() + "\\level.dat"));
+            System.out.println(world.getDifficulty());
             success.setText(ColorUtil.text("§gChanged data!"));
         });
 
