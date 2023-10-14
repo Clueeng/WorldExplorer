@@ -1,5 +1,6 @@
 package net.clue.ui.impl;
 
+import net.clue.Main;
 import net.clue.ui.WEFrame;
 import net.clue.ui.WeComponents;
 import net.clue.utils.ColorUtil;
@@ -36,6 +37,7 @@ public class StatsMenu {
         JSpinner value = WeComponents.WeSpinner(0, 0, Integer.MAX_VALUE, 1000, "medium");
 
         JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and inject"), "medium");
+
         inject.addActionListener(e -> {
             String valuee = String.valueOf(value.getValue());
             WorldSelector s = new WorldSelector(frame, "Choose a World Folder");

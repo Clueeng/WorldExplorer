@@ -67,6 +67,9 @@ public class WeComponents {
         SpinnerModel model = new SpinnerNumberModel(v, min, max, step);
         JSpinner spinner = new JSpinner(model);
         spinner.setFont(Main.fonts.get(font));
+        spinner.setBackground(StyleProperties.MAIN_COLOR_DARKER);
+        spinner.setForeground(Color.white);
+        spinner.setBorder(new CustomComboBorder(Color.white, 2));
         //spinner.setUI(new ModernSpinnerUI());
 
         return spinner;
