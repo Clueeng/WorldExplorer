@@ -11,6 +11,7 @@ public class WEFrame {
         JFrame frame = new JFrame(title);
         frame.setResizable(false);
         frame.setFont(Main.fonts.get("small"));
+
         frame.getContentPane().setBackground(StyleProperties.MAIN_COLOR);
         frame.getContentPane().setForeground(StyleProperties.MAIN_COLOR_DARKER);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

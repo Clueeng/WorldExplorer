@@ -1,6 +1,5 @@
 package net.clue.ui.impl;
 
-import net.clue.Main;
 import net.clue.ui.WEFrame;
 import net.clue.ui.WeComponents;
 import net.clue.utils.ColorUtil;
@@ -37,21 +36,18 @@ public class StatsMenu {
         JSpinner value = WeComponents.WeSpinner(0, 0, Integer.MAX_VALUE, 1000, "medium");
 
         JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and inject"), "medium");
-        inject.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String valuee = String.valueOf(value.getValue());
-                WorldSelector s = new WorldSelector(frame, "Choose a World Folder");
-                System.out.println(valuee + " ");
-                FileUtil f = new FileUtil();
+        inject.addActionListener(e -> {
+            String valuee = String.valueOf(value.getValue());
+            WorldSelector s = new WorldSelector(frame, "Choose a World Folder");
+            System.out.println(valuee + " ");
+            FileUtil f = new FileUtil();
 
-                try {
-                    f.maxStats(s.worldFolder, Objects.requireNonNull(comboBox.getSelectedItem()).toString(), valuee);
-                    success.setText(ColorUtil.text("§gChanged data!"));
-                } catch (IOException ex) {
-                    success.setText("§rFailed to change data");
-                    throw new RuntimeException(ex);
-                }
+            try {
+                f.maxStats(s.worldFolder, Objects.requireNonNull(comboBox.getSelectedItem()).toString(), valuee);
+                success.setText(ColorUtil.text("§gChanged data!"));
+            } catch (IOException ex) {
+                success.setText("§rFailed to change data");
+                throw new RuntimeException(ex);
             }
         });
 

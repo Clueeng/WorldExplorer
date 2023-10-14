@@ -1,15 +1,10 @@
 package net.clue.ui.impl;
 
-import net.clue.Main;
-import net.clue.ui.StyleProperties;
 import net.clue.ui.WEFrame;
 import net.clue.ui.WeComponents;
 import net.clue.utils.ColorUtil;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainChoiceMenu {
 

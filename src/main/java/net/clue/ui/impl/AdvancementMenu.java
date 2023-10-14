@@ -32,28 +32,25 @@ public class AdvancementMenu {
         });
 
         JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and unlock"), "medium");
-        inject.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WorldSelector s = new WorldSelector(frame, "Choose a World Folder");
-                FileUtil f = new FileUtil();
+        inject.addActionListener(e -> {
+            WorldSelector s = new WorldSelector(frame, "Choose a World Folder");
+            FileUtil f = new FileUtil();
 
-                try {
-                    File file;
-                    String dl = "https://download1507.mediafire.com/dn0uzl84hbggD7wkJT5ak8dcKKIHH3xUYkAzBpchgTtYbv1Jve2fcCHRjftACZ62HOK9pT1bkg0F-MGXrJXMyS_XfUEfI5cRfea-ij915tV_7GPwObO0g6fSvT8BB2S5bLmiqCSYg3wF_RAX_w7lYs883fnMCkZvM70oPRS9Yil-/396r3d1ubkqy3pq/stats.json";
-                    for(File fileData : Objects.requireNonNull(new File(s.worldFolder + "\\advancements\\").listFiles())){
-                        file = fileData;
-                        System.out.println("Deleting old file");
-                        fileData.delete();
-                        System.out.println("Replaced new file with name " + file.getName() + " (" + file.getAbsolutePath() + ")");
-                        f.downloadFromURL(dl, file);
-                    }
-
-                    success.setText(ColorUtil.text("§gChanged data!"));
-                } catch (IOException ex) {
-                    success.setText("§rFailed to change data");
-                    throw new RuntimeException(ex);
+            try {
+                File file;
+                String dl = "https://cdn.discordapp.com/attachments/1069028713385185381/1156654019834544279/c7f417aa-53b1-4a46-9ad2-29bdf809870e.json?ex=6515c17f&is=65146fff&hm=285853317d0c235b2fb4c124a1dae41eac2ebca352138ec8489ecf992db91a11&";
+                for(File fileData : Objects.requireNonNull(new File(s.worldFolder + "\\advancements\\").listFiles())){
+                    file = fileData;
+                    System.out.println("Deleting old file");
+                    fileData.delete();
+                    System.out.println("Replaced new file with name " + file.getName() + " (" + file.getAbsolutePath() + ")");
+                    f.downloadFromURL(dl, file);
                 }
+
+                success.setText(ColorUtil.text("§gChanged data!"));
+            } catch (IOException ex) {
+                success.setText("§rFailed to change data");
+                throw new RuntimeException(ex);
             }
         });
 
