@@ -39,14 +39,16 @@ public class NBTUtil {
     // 0 = not hardcore, 1 = hardcore
     public void setHardcore(int hardcore) {
         CompoundTag tag = getTag();
-        CompoundTag data_tag = tag.getCompound("Data");
+        CompoundTag data_tag = tag.getCompound(DATA);
         data_tag.putInt("hardcore", hardcore);
+        tag.replace("Data", data_tag);
     }
 
     public void setSeed(long seed) {
         CompoundTag tag = getTag();
         CompoundTag data_tag = tag.getCompound("Data");
         data_tag.putLong("RandomSeed", seed);
+        tag.replace("Data", data_tag);
     }
 
     public void allowCheats(boolean allow) {
@@ -54,6 +56,7 @@ public class NBTUtil {
         CompoundTag tag = getTag();
         CompoundTag data_tag = tag.getCompound("Data");
         data_tag.putInt(targetName, allow ? 1 : 0);
+        tag.replace("Data", data_tag);
     }
 
     public void borderSize(double size) {
@@ -61,5 +64,7 @@ public class NBTUtil {
         CompoundTag tag = getTag();
         CompoundTag data_tag = tag.getCompound("Data");
         data_tag.putDouble(targetName, size);
+        tag.replace("Data", data_tag);
     }
+
 }
