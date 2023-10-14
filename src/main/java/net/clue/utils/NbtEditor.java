@@ -1,10 +1,10 @@
 package net.clue.utils;
 
-import dev.dewy.nbt.Nbt;
-import dev.dewy.nbt.api.registry.TagTypeRegistry;
-import dev.dewy.nbt.tags.collection.CompoundTag;
+import net.forthecrown.nbt.BinaryTags;
+import net.forthecrown.nbt.CompoundTag;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class NbtEditor {
@@ -18,11 +18,11 @@ public class NbtEditor {
     }
 
     public void dothing(){
-        Nbt nbt = new Nbt();
-
         try {
-            CompoundTag t = nbt.fromFile(datFile);
-            t.toJson(1, new TagTypeRegistry());
+            FileInputStream fileInputStream = new FileInputStream(datFile);
+            CompoundTag tag = BinaryTags.readCompressed(fileInputStream);
+            boolean hardcore = tag.getBoolean("hardcore");
+            System.out.println("Hardcore: " + hardcore);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

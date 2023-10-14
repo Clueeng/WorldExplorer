@@ -45,19 +45,14 @@
             <version>18.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Querz</groupId>
-            <artifactId>NBT</artifactId>
-            <version>6.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
         <dependency>
-            <groupId>dev.dewy</groupId>
+            <groupId>net.forthecrown</groupId>
             <artifactId>nbt</artifactId>
-            <version>1.5.1</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 
