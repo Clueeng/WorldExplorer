@@ -47,6 +47,19 @@ public class NbtEditor {
         }
         return 0;
     }
+    public boolean getHardcore(){
+        try{
+            FileInputStream input = new FileInputStream(datFile);
+            CompoundTag tag = BinaryTags.readCompressed(input);
+            CompoundTag data_tag = tag.getCompound("Data");
+            return data_tag.getInt("Hardcore") == 1;
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
     public void changeHardcore(boolean hardcore){
         try{
@@ -57,6 +70,21 @@ public class NbtEditor {
             int old_value_int = data_tag.getInt("Hardcore");
 
             //data_tag.putBoolean("Hardcore", hardcore);
+            input.close();
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void allowCheats(boolean cheats){
+        try{
+            FileInputStream input = new FileInputStream(datFile);
+            CompoundTag tag = BinaryTags.readCompressed(input);
+            CompoundTag data_tag = tag.getCompound("Data");
+            data_tag.putInt("allowCommands", cheats ? 1 : 0);
+            System.out.println(data_tag.getInt("allowCommands"));
             input.close();
         }catch (FileNotFoundException e){
             e.printStackTrace();

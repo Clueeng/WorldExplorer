@@ -2,19 +2,17 @@ package net.clue.ui.impl;
 
 import net.clue.ui.WEFrame;
 import net.clue.ui.WeComponents;
-import net.clue.utils.ColorUtil;
-import net.clue.utils.FileUtil;
-import net.clue.utils.NbtEditor;
-import net.clue.utils.WorldSelector;
+import net.clue.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class NBTMenu {
-
+    public NbtEditor world;
     public NBTMenu(){
         JFrame frame = WEFrame.WorldFrame(300, 400, "Stats Changer");
         FlowLayout l = new FlowLayout();
@@ -30,17 +28,37 @@ public class NBTMenu {
             frame.setVisible(false);
         });
 
-        JButton inject = WeComponents.WeButton(ColorUtil.text("§1Select world and inject"), "medium");
-        inject.addActionListener(e -> {
+        JButton chooseWorld = WeComponents.WeButton(ColorUtil.text("§1Select world"), "medium");
+        chooseWorld.addActionListener(e -> {
             WorldSelector s = new WorldSelector(frame, "Choose a dat File");
-            NbtEditor world = new NbtEditor(new File(s.worldFolder.getAbsolutePath() + "\\level.dat"));
-            System.out.println(world.getDifficulty());
-            success.setText(ColorUtil.text("§gChanged data!"));
+            world = new NbtEditor(new File(s.worldFolder.getAbsolutePath() + "\\level.dat"));
+            success.setText(ColorUtil.text("§gGot dat file!"));
         });
+
+        JButton allowCheats = WeComponents.WeButton(ColorUtil.text("§pEnable cheats"), "medium");
+        allowCheats.addActionListener(e -> {
+            success.setText(ColorUtil.text("§gEnabled cheats"));
+            NBTUtil wrld = new NBTUtil(world.datFile);
+            wrld.allowCheats(true);
+            wrld.save();
+        });
+
+
+        JButton debug = WeComponents.WeButton(ColorUtil.text("§pDebug"), "medium");
+        debug.addActionListener(e -> {
+            NBTUtil wrld = new NBTUtil(world.datFile);
+            NBTUtil.Player player = wrld.getPlayer();
+            player.setHealth(100);
+            player.save();
+            wrld.save();
+        });
+
 
         frame.add(label);
         frame.add(success);
-        frame.add(inject);
+        frame.add(chooseWorld);
+        frame.add(allowCheats);
+        frame.add(debug);
         frame.add(backToMenu);
 
 
