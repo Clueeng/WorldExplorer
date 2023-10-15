@@ -78,6 +78,11 @@ public class NBTUtil {
         CompoundTag data_tag = tag.getCompound("Data");
         data_tag.putDouble(targetName, size);
     }
+
+    public String getLevelName(){
+        return getTag().getString("LevelName");
+    }
+
     public Player getPlayer(){
         return new Player();
     }
