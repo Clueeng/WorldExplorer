@@ -1,8 +1,10 @@
 package net.clue.utils;
 
 import net.forthecrown.nbt.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.util.*;
 
 public class NBTUtil {
     //
@@ -27,6 +29,10 @@ public class NBTUtil {
         return tag;
     }
 
+    public CompoundTag getDataTag(){
+        return tag.getCompound("Data");
+    }
+
     public void resetInputStream(File datFile) {
         try {
             this.inputStream = new FileInputStream(datFile);
@@ -38,24 +44,25 @@ public class NBTUtil {
 
     // 0 = not hardcore, 1 = hardcore
     public void setHardcore(int hardcore) {
-        getTag().getCompound("Data").putInt("hardcore", hardcore);
+        getDataTag().putInt("hardcore", hardcore);
     }
     public int getDifficulty(){
-        return getTag().getCompound("Data").getInt("Difficulty");
+        return getDataTag().getInt("Difficulty");
     }
     public void setDifficulty(int difficulty) {
-        getTag().getCompound("Data").putInt("Difficulty", difficulty);
+        getDataTag().putInt("Difficulty", difficulty);
     }
 
     public void setSeed(long seed) {
-        getTag().getCompound("Data").putLong("RandomSeed", seed);
+        getDataTag().putLong("RandomSeed", seed);
     }
 
     public void allowCheats(boolean allow) {
-        getTag().getCompound("Data").putInt("allowCommands", allow ? 1 : 0);
+        getDataTag().putInt("allowCommands", allow ? 1 : 0);
     }
     public void closeStream() {
         try {
+            System.out.println("Closed I_stream");
             inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -80,23 +87,143 @@ public class NBTUtil {
     }
 
     public String getLevelName(){
-        return getTag().getString("LevelName");
+        return getDataTag().getString("LevelName");
+    }
+    public void setLevelName(String levelName){
+        getDataTag().putString("LevelName", levelName);
     }
 
     public Player getPlayer(){
         return new Player();
     }
     public class Player{
-        CompoundTag player = getTag().getCompound("Data").getCompound("Player");
-        public Player(){
-            CompoundTag player = getTag().getCompound("Data").getCompound("Player");
+        CompoundTag player = getDataTag().getCompound("Player");
+        public double[] getPosition(){
+            return new double[] {
+                    player.get("Pos").asList().get(0).asNumber().doubleValue(),
+                    player.get("Pos").asList().get(1).asNumber().doubleValue(),
+                    player.get("Pos").asList().get(2).asNumber().doubleValue()
+            };
         }
-        public void setPosition(long x, long y, long z){
-            player.putLongArray("Pos", x, y, z);
+        public void setPosition(double x, double y, double z) {
+            BinaryTag posTag = player.get("Pos");
+            ListTag newPos = BinaryTags.listTag();
+            newPos.add(BinaryTags.doubleTag(x));
+            newPos.add(BinaryTags.doubleTag(y));
+            newPos.add(BinaryTags.doubleTag(z));
+            player.replace("Pos", posTag, newPos);
         }
-        public long[] getPosition(){
-            return player.getLongArray("Pos");
+
+        public ListTag getInventory(){
+            BinaryTag inventoryTag = player.get("Inventory");
+            return inventoryTag.asList();
         }
+
+        public void clearInventory(){
+            getInventory().clear();
+        }
+
+        /*public void setItem(byte slot, String id, byte count){
+            HashMap<String, BinaryTag> map = new HashMap<>();
+            map.put("Slot", BinaryTags.byteTag(slot));
+            map.put("id", BinaryTags.stringTag(id));
+            map.put("Count", BinaryTags.byteTag(count));
+
+            CompoundTag tag1 = BinaryTags.compoundTag(map);
+            getInventory().add(tag1);
+        }
+
+        public void setItem(byte slot, String id, byte count, HashMap<String, Object> displayTag, HashMap<String, Integer> enchantments){
+            HashMap<String, BinaryTag> map = new HashMap<>();
+            map.put("Slot", BinaryTags.byteTag(slot));
+            map.put("id", BinaryTags.stringTag(id));
+            map.put("Count", BinaryTags.byteTag(count));
+
+            // Add enchantments to the item tag
+            if (enchantments != null && !enchantments.isEmpty()) {
+                ListTag enchantmentList = BinaryTags.listTag();
+                enchantmentList.addAll(getEnchants(enchantments));
+                map.put("tag", BinaryTags.compoundTag(Collections.singletonMap("Enchantments", enchantmentList)));
+            }
+            if(displayTag != null && !displayTag.isEmpty()){
+                //
+                ListTag displayList = BinaryTags.listTag();
+                displayList.addAll(getTags(displayTag));
+                map.put("tag", BinaryTags.compoundTag(Collections.singletonMap("display", displayList)));
+            }
+
+            CompoundTag tag1 = BinaryTags.compoundTag(map);
+            getInventory().add(tag1);
+        }
+        public List<CompoundTag> getTags(HashMap<String, Object> tags) {
+            List<CompoundTag> tagsList = new ArrayList<>();
+
+            for (Map.Entry<String, Object> entry : tags.entrySet()) {
+                String tag = entry.getKey();
+                Object tagV = entry.getValue();
+                System.out.println(tag + " : " + tagV);
+
+                // Create an enchantment CompoundTag for each entry
+                CompoundTag enchantment = BinaryTags.compoundTag();
+
+                enchantment.put(tag, BinaryTags.shortTag((short) tagV));
+                tagsList.add(enchantment);
+            }
+
+            return tagsList;
+        }*/
+
+        public List<CompoundTag> getEnchants(HashMap<String, Integer> enchants) {
+            List<CompoundTag> enchantments = new ArrayList<>();
+
+            for (Map.Entry<String, Integer> entry : enchants.entrySet()) {
+                String enchantName = entry.getKey();
+                int enchantLevel = entry.getValue();
+                System.out.println(enchantName + " : " + enchantLevel);
+
+                // Create an enchantment CompoundTag for each entry
+                CompoundTag enchantment = BinaryTags.compoundTag(
+                        Collections.singletonMap("id", BinaryTags.stringTag("minecraft:" + enchantName))
+                );
+
+                enchantment.put("lvl", BinaryTags.shortTag((short) enchantLevel));
+                enchantments.add(enchantment);
+            }
+
+            return enchantments;
+        }
+        /*public void setItem(byte slot, String id, byte count, HashMap<String, Integer> enchantments) {
+            HashMap<String, BinaryTag> map = new HashMap<>();
+            map.put("Slot", BinaryTags.byteTag(slot));
+            map.put("id", BinaryTags.stringTag(id));
+            map.put("Count", BinaryTags.byteTag(count));
+
+            // Add enchantments to the item tag
+            if (enchantments != null && !enchantments.isEmpty()) {
+                ListTag enchantmentList = BinaryTags.listTag();
+                enchantmentList.addAll(getEnchants(enchantments));
+                map.put("tag", BinaryTags.compoundTag(Collections.singletonMap("Enchantments", enchantmentList)));
+            }
+
+            CompoundTag tag1 = BinaryTags.compoundTag(map);
+            getInventory().add(tag1);
+        }*/
+
+        public void addItem(ItemBuilder b){
+            getInventory().add(b.createTag());
+        }
+
+        public int getGamemode(){
+            return player.getInt("playerGameType");
+        }
+        public void setGamemode(int gm){
+            player.putInt("playerGameType", gm);
+        }
+
+        public Object debugPos(){
+            return player.get("Pos");
+        }
+
 
         public int getHealth(){
             return player.getInt("Health");
@@ -130,6 +257,14 @@ public class NBTUtil {
             player.putInt("Health", h);
         }
 
+        public void closeStream() {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         public void save(){
             try {
                 FileOutputStream fOut = new FileOutputStream(datFile);
@@ -138,6 +273,7 @@ public class NBTUtil {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            closeStream();
         }
 
     }

@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 
 public class WeComponents {
 
@@ -44,10 +45,73 @@ public class WeComponents {
         return jButton;
     }
 
+    public static JCheckBox checkBox(){
+        JCheckBox check = new JCheckBox();
+        Icon checkedIcon = new ImageIcon(createCheckImage(StyleProperties.ACCENT_MAIN_COLOR_DARKER));
+        Icon uncheckedIcon = new ImageIcon(createCheckImage(Color.WHITE));
+
+        // Set the custom icons
+        check.setSelectedIcon(checkedIcon);
+        check.setIcon(uncheckedIcon);
+
+        return check;
+    }
+
+    private static Image createCheckImage(Color color) {
+        BufferedImage image = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = image.createGraphics();
+        g2.setColor(color);
+        g2.fillRect(0, 0, 20, 20);
+        g2.setColor(Color.WHITE);
+        g2.drawLine(3, 10, 8, 15);
+        g2.drawLine(8, 15, 17, 6);
+        g2.dispose();
+        return image;
+    }
+
+    public static JButton box(String text, String font, int w, int h){
+        JButton jButton = new JButton();
+
+        jButton.setFont(Main.fonts.get(font));
+        jButton.setFocusPainted(false);
+        //jButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+        jButton.setSize(32, 32);
+        jButton.setPreferredSize(new Dimension(32, 32));
+        jButton.setLocation(w, h);
+        jButton.setBorderPainted(false);
+        jButton.setForeground(Color.WHITE);
+        jButton.setBackground(StyleProperties.MAIN_COLOR_DARKER);
+        UIManager.put("Button.select", new ColorUIResource(StyleProperties.ACCENT_MAIN_COLOR_DARKER));
+        jButton.setText(text);
+        jButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                jButton.setBackground(StyleProperties.ACCENT_MAIN_COLOR_DARKER.darker());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                jButton.setBackground(StyleProperties.MAIN_COLOR_DARKER);
+                super.mouseExited(e);
+            }
+        });
+
+        return jButton;
+    }
+
     public static JLabel WeLabel(String text, String font){
         JLabel label = new JLabel();
         label.setFont(Main.fonts.get(font));
         label.setText(ColorUtil.text(text));
+
+        return label;
+    }
+
+    public static JTextField WeTextField(String text, String font){
+        JTextField label = new JTextField(text);
+        label.setFont(Main.fonts.get(font));
+        label.setMinimumSize(new Dimension(200, 20));
+        //label.setText(text);
 
         return label;
     }

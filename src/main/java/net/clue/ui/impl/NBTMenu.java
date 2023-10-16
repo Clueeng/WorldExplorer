@@ -2,17 +2,20 @@ package net.clue.ui.impl;
 
 import net.clue.ui.WEFrame;
 import net.clue.ui.WeComponents;
+import net.clue.ui.impl.inv.InventoryMenu;
 import net.clue.utils.*;
+import net.forthecrown.nbt.BinaryTags;
+import net.forthecrown.nbt.CompoundTag;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.List;
 
 public class NBTMenu {
-    public NbtEditor world;
+    public NBTUtil world;
     public NBTMenu(){
         JFrame frame = WEFrame.WorldFrame(300, 400, "Stats Changer");
         FlowLayout l = new FlowLayout();
@@ -31,7 +34,7 @@ public class NBTMenu {
         JButton chooseWorld = WeComponents.WeButton(ColorUtil.text("§1Select world"), "medium");
         chooseWorld.addActionListener(e -> {
             WorldSelector s = new WorldSelector(frame, "Choose a dat File");
-            world = new NbtEditor(new File(s.worldFolder.getAbsolutePath() + "\\level.dat"));
+            world = new NBTUtil(new File(s.worldFolder.getAbsolutePath() + "\\level.dat"));
             success.setText(ColorUtil.text("§gGot dat file!"));
         });
 
@@ -48,9 +51,37 @@ public class NBTMenu {
         debug.addActionListener(e -> {
             NBTUtil wrld = new NBTUtil(world.datFile);
             NBTUtil.Player player = wrld.getPlayer();
-            player.setHealth(100);
+            System.out.println(player.getInventory());
+            HashMap<String, Integer> enchants = new HashMap<>();
+            enchants.put("sharpness", 10);
+
+            //player.setItem_display((byte)8, "minecraft:diamond_sword", (byte)1, displayTags);
+            ItemBuilder item = new ItemBuilder("minecraft:diamond_sword", (byte) 64, (byte) 0)
+                    .withCustomName("Hello")
+                    .withDamage(20)
+                    .withEnchantments(enchants);
+            player.clearInventory();
+            player.addItem(item);
+
             player.save();
             wrld.save();
+        });
+
+        JButton editInv = WeComponents.WeButton(ColorUtil.text("§rEdit Inventory"), "medium");
+        editInv.addActionListener(e ->{
+            if(world.datFile == null){
+                return;
+            }
+            new InventoryMenu(world);
+        });
+
+        JButton save = WeComponents.WeButton(ColorUtil.text("§gSave Changes"), "big");
+        save.addActionListener(e -> {
+            NBTUtil wrld = new NBTUtil(world.datFile);
+            NBTUtil.Player player = wrld.getPlayer();
+            player.save();
+            wrld.save();
+            wrld.closeStream();
         });
 
 
@@ -58,7 +89,9 @@ public class NBTMenu {
         frame.add(success);
         frame.add(chooseWorld);
         frame.add(allowCheats);
+        frame.add(editInv);
         frame.add(debug);
+        frame.add(save);
         frame.add(backToMenu);
 
 
