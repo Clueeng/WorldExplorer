@@ -38,14 +38,14 @@ public class InventoryMenu {
         int slot_ = 0;
         for(int wid = 0; wid < 9; wid++){
             for(int hei = 4; hei > 0; hei--){
-                JButton slot = WeComponents.box((ColorUtil.text(String.valueOf(slot_))), "small", wid*32, hei*32);
+                JButton slot = WeComponents.box((ColorUtil.text(String.valueOf(slot_))), "small", wid*32, hei*32, 80);
+                slot.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 slot.addActionListener(e ->{
                     String sl = trim(slot.getText());
-                    System.out.println("Hi item " + sl);
                     new ItemMenu(sl, world);
                 });
                 slot_++;
-                frame.add(slot, BorderLayout.AFTER_LINE_ENDS);
+                frame.add(slot);
             }
         }
         frame.add(label, BorderLayout.PAGE_END);

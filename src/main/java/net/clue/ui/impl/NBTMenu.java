@@ -51,18 +51,21 @@ public class NBTMenu {
         debug.addActionListener(e -> {
             NBTUtil wrld = new NBTUtil(world.datFile);
             NBTUtil.Player player = wrld.getPlayer();
-            System.out.println(player.getInventory());
+            //System.out.println(player.getInventory());
             HashMap<String, Integer> enchants = new HashMap<>();
             enchants.put("sharpness", 10);
+            enchants.put("luck_of_the_sea", 100);
+            ItemBuilder item_0 = new ItemBuilder("minecraft:stick", (byte) 32, (byte) 0);
+            item_0.withEnchantments(enchants)
+                    .withDamage(20);
+            player.addItem(item_0);
 
-            //player.setItem_display((byte)8, "minecraft:diamond_sword", (byte)1, displayTags);
-            ItemBuilder item = new ItemBuilder("minecraft:diamond_sword", (byte) 64, (byte) 0)
-                    .withCustomName("Hello")
-                    .withDamage(20)
-                    .withEnchantments(enchants);
-            player.clearInventory();
-            player.addItem(item);
+            ItemBuilder newitem = player.getItem((byte)0);
+            System.out.println(newitem.getID());
+            System.out.println(newitem.getEnchantments());
+            System.out.println(newitem.getDamage());
 
+            player.addItem(newitem.changeSlot((byte) 1));
             player.save();
             wrld.save();
         });

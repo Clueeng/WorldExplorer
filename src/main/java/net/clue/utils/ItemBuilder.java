@@ -20,6 +20,11 @@ public class ItemBuilder {
         itemTag.put("Slot", BinaryTags.byteTag(slot));
     }
 
+    public ItemBuilder changeSlot(byte slot){
+        itemTag.put("Slot", BinaryTags.byteTag(slot));
+        return this;
+    }
+
     public ItemBuilder withCustomName(String customName) {
         // Create or update the display tag for the custom name
         if(itemTag.getCompound("tag").isEmpty() || itemTag.getCompound("tag") == null){
@@ -59,6 +64,52 @@ public class ItemBuilder {
         return this;
     }
 
+
+
+    public int getDamage(){
+        if (!itemTag.contains("tag")) {
+            itemTag.put("tag", BinaryTags.compoundTag());
+        }
+        return itemTag.getCompound("tag").get("Damage").asNumber().intValue();
+    }
+    public int getCount(){
+        if (!itemTag.contains("tag")) {
+            itemTag.put("tag", BinaryTags.compoundTag());
+        }
+        return itemTag.getCompound("tag").get("Count").asNumber().intValue();
+    }
+
+    public String getID(){
+        if (!itemTag.contains("tag")) {
+            itemTag.put("tag", BinaryTags.compoundTag());
+        }
+        return itemTag.get("id").asString().toNbtString();
+    }
+    public String cleanName(){
+        String[] parts = getID().split(":");
+        if (parts.length == 2) {
+            return parts[1].replaceAll("'", "");
+        } else {
+            return getID(); // Return the original string if no colon is found
+        }
+    }
+    public static String cleanName(String id){
+        String[] parts = id.split(":");
+        if (parts.length == 2) {
+            return parts[1].replaceAll("'", "");
+        } else {
+            return id; // Return the original string if no colon is found
+        }
+    }
+    public String clean_mc(String mc){
+        String[] parts = mc.split(":");
+        if (parts.length == 2) {
+            return parts[1];
+        } else {
+            return mc; // Return the original string if no colon is found
+        }
+    }
+
     public ItemBuilder withEnchantments(HashMap<String, Integer> enchantments) {
         // Create or update the enchantments tag
         if (!itemTag.contains("tag")) {
@@ -80,6 +131,98 @@ public class ItemBuilder {
         }
 
         return this;
+    }
+    public ItemBuilder removeEnchantment(String enchantName) {
+        if (itemTag.contains("tag")) {
+            CompoundTag tag = itemTag.getCompound("tag");
+
+            if (tag.contains("Enchantments")) {
+                ListTag enchantmentList = tag.getList("Enchantments");
+
+                // Find and remove the enchantment with the specified name
+                for (BinaryTag enchantTag : enchantmentList) {
+                    if (enchantTag instanceof CompoundTag) {
+                        CompoundTag enchantment = (CompoundTag) enchantTag;
+                        String id = enchantment.getString("id");
+
+                        if (id.equals(enchantName)) {
+                            enchantmentList.remove(enchantTag);
+                            break; // Exit the loop after removing the enchantment
+                        }
+                    }
+                }
+
+                // If the list is empty, remove the "Enchantments" tag
+                if (enchantmentList.isEmpty()) {
+                    tag.remove("Enchantments");
+                }
+            }
+        }
+
+        return this;
+    }
+
+    public int getEnchantmentLevel(String enchantmentName) {
+        List<HashMap<String, Integer>> enchantmentsList = getAllEnchantments();
+
+        for (HashMap<String, Integer> enchantment : enchantmentsList) {
+            System.out.println(enchantment +"hii");
+            if (enchantment.containsKey(enchantmentName)) {
+                return enchantment.get(enchantmentName);
+            }
+        }
+
+        return 0; // Return 0 if the enchantment is not found
+    }
+
+    public List<HashMap<String, Integer>> getAllEnchantments() {
+        List<HashMap<String, Integer>> enchantmentsList = new ArrayList<>();
+
+        if (itemTag.contains("tag")) {
+            CompoundTag tag = itemTag.getCompound("tag");
+
+            if (tag.contains("Enchantments")) {
+                ListTag enchantmentList = tag.getList("Enchantments");
+
+                for (BinaryTag enchantTag : enchantmentList) {
+                    if (enchantTag instanceof CompoundTag) {
+                        CompoundTag enchantment = (CompoundTag) enchantTag;
+                        String enchantId = enchantment.getString("id");
+                        int level = enchantment.getShort("lvl");
+
+                        HashMap<String, Integer> enchantmentMap = new HashMap<>();
+                        enchantmentMap.put(enchantId, level);
+
+                        enchantmentsList.add(enchantmentMap);
+                    }
+                }
+            }
+        }
+
+        return enchantmentsList;
+    }
+
+    public HashMap<String, Integer> getEnchantments() {
+        HashMap<String, Integer> enchantments = new HashMap<>();
+
+        if (itemTag.contains("tag")) {
+            CompoundTag tag = itemTag.getCompound("tag");
+
+            if (tag.contains("Enchantments")) {
+                ListTag enchantmentList = tag.getList("Enchantments");
+
+                for (BinaryTag enchantTag : enchantmentList) {
+                    if (enchantTag instanceof CompoundTag) {
+                        CompoundTag enchantment = (CompoundTag) enchantTag;
+                        String enchantId = enchantment.getString("id");
+                        int level = enchantment.getShort("lvl");
+                        enchantments.put(enchantId, level);
+                    }
+                }
+            }
+        }
+
+        return enchantments;
     }
 
     private List<CompoundTag> getEnchants(HashMap<String, Integer> enchants) {

@@ -69,13 +69,13 @@ public class WeComponents {
         return image;
     }
 
-    public static JButton box(String text, String font, int w, int h){
+    public static JButton box(String text, String font, int w, int h, int widthSize){
         JButton jButton = new JButton();
 
         jButton.setFont(Main.fonts.get(font));
         jButton.setFocusPainted(false);
         //jButton.setBorder(new EmptyBorder(0, 0, 0, 0));
-        jButton.setSize(32, 32);
+        jButton.setSize(32 + widthSize, 32);
         jButton.setPreferredSize(new Dimension(32, 32));
         jButton.setLocation(w, h);
         jButton.setBorderPainted(false);
