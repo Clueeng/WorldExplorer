@@ -1,5 +1,5 @@
 # WorldEditor
-A World Editor for Minecraft Java Edition
+A World Editor for Minecraft Java Edition, 1.13+
 
 # Why would I use this
 If you've ever wanted to modify your inventory with items you're not supposed to get in vanilla, it's always a hassle to use NBTEditor or just vanilla commands, whereas this tool freely allows you to edit your inventory, and saves it directly into the world.
